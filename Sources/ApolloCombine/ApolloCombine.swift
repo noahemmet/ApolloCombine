@@ -1,3 +1,3 @@
-struct ApolloCombine {
-    var text = "Hello, World!"
-}
+import SwiftUI
+import Combine
+import Apollo
