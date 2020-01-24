@@ -26,7 +26,7 @@ public final class Query<Data> {
   }
   
   @Published
-  public var wrappedValue: QueryState<Data> = .idle {
+  public private(set) var wrappedValue: QueryState<Data> = .idle {
     didSet {
       if case .success(let value) = wrappedValue {
         self.value = value

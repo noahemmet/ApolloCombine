@@ -4,15 +4,6 @@ import Apollo
 
 extension ApolloClient: ObservableObject { }
 
-public enum QueryState<Data> {
-  case idle
-  case fetching
-  case success(Data)
-  case failure(Error)
-  
-  var isSuccess: Bool { true }
-}
-
 extension Array: Error where Element == GraphQLError {
   
 }
