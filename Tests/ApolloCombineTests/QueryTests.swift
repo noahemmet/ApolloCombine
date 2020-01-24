@@ -4,21 +4,21 @@ import Apollo
 @testable import ApolloCombine
 
 private struct TestView: View {
-  @Query var getHero: QueryState<GetHeroQuery.Data>
+  @Query var getHero: GetHeroQuery.Data?
   
-  private var character: CharacterFragment? { getHero.data?.hero?.fragments.characterFragment }
+  private var character: CharacterFragment? { getHero?.hero?.fragments.characterFragment }
   
   var body: some View {
     VStack {
-      if getHero.isFetching {
+      if $getHero.isFetching {
         Text("Fetching…")
-      } else if getHero.isSuccess {
+      } else if $getHero.isSuccess {
         Text(character?.name ?? "Unknown name")
-      } else if getHero.isError {
-        Text(getHero.error!.localizedDescription)
+      } else if $getHero.isError {
+        Text($getHero.error!.localizedDescription)
       }
       Button("Fetch hero", action: fetchDefault)
-        .disabled(getHero.isSuccess)
+        .disabled($getHero.isSuccess)
       Button("Fetch hero for episode") {
         let episode = try! Episode(jsonValue: "episode 1")
         let query = GetHeroQuery(episode: episode)

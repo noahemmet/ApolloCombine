@@ -26,18 +26,20 @@ public final class Query<Data> {
   }
   
   @Published
-  public private(set) var wrappedValue: QueryState<Data> = .idle {
+  public private(set) var wrappedValue: Data?
+  
+  public var projectedValue: QueryState<Data> { state }
+  
+  @Published
+  public private(set) var state: QueryState<Data> = .idle {
     didSet {
-      if case .success(let value) = wrappedValue {
-        self.value = value
+      if case .success(let value) = state {
+        self.wrappedValue = value
       } else {
-        self.value = nil
+        self.wrappedValue = nil
       }
     }
   }
-  
-  @Published
-  public var value: Data? = nil
 
   public func fetch<Query: GraphQLQuery>(
     with query: Query,
@@ -60,20 +62,20 @@ public final class Query<Data> {
       queue: queue ?? self.queue
     ) { [weak self] networkResult in
       guard let self = self else { return }
-      let queryState: QueryState<Query.Data>
+      let state: QueryState<Query.Data>
       switch networkResult {
       case .success(let graphQLResult):
         let result = graphQLResult.result
         switch result {
         case .success(let data):
-          queryState = .success(data)
+          state = .success(data)
         case .failure(let error):
-          queryState = .failure(error)
+          state = .failure(error)
         }
       case .failure(let error):
-        queryState = .failure(error)
+        state = .failure(error)
       }
-      self.wrappedValue = queryState
+      self.state = state
     }
   }
   
