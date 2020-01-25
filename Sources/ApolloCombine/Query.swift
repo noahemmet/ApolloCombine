@@ -33,11 +33,7 @@ public final class Query<Data> {
   @Published
   public private(set) var state: QueryState<Data> = .idle {
     didSet {
-      if case .success(let value) = state {
-        self.wrappedValue = value
-      } else {
-        self.wrappedValue = nil
-      }
+      wrappedValue = state.data
     }
   }
 
@@ -53,7 +49,7 @@ public final class Query<Data> {
       apolloCancellable?.cancel()
     }
     
-    //    self.wrappedValue = .fetching
+    self.state = .fetching
     
     apolloCancellable = apolloClient.fetch(
       query: query,
